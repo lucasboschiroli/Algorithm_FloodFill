@@ -159,7 +159,7 @@ class ProcessadorImagem {
         }
 
         // Se não encontrar, usa o método do centro
-        return encontrarPixelBrancoNoCenter(matriz);
+        return encontrarPixelBrancoNoCentro(matriz);
     }
 
     private int[][] criarMatrizExemplo() {
