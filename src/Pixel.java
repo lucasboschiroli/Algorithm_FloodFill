@@ -22,4 +22,3 @@ interface EstruturaPixel {
     Pixel remover();
     boolean estaVazia();
 }
-

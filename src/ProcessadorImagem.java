@@ -142,6 +142,7 @@ class ProcessadorImagem {
                         for (int dx = -5; dx <= 5 && !temPretoProximo; dx++) {
                             int ny = y + dy;
                             int nx = x + dx;
+                            
                             if (ny >= 0 && ny < altura && nx >= 0 && nx < largura) {
                                 if (matriz[ny][nx] == 0xFF000000) {
                                     temPretoProximo = true;

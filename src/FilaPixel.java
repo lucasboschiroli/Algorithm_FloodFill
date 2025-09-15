@@ -1,14 +1,14 @@
-class FilaPixel implements EstruturaPixel {
-    private static class No {
-        Pixel pixel;
-        No proximo;
+class No {
+    Pixel pixel;
+    No proximo;
 
-        No(Pixel pixel) {
-            this.pixel = pixel;
-            this.proximo = null;
-        }
+    No(Pixel pixel) {
+        this.pixel = pixel;
+        this.proximo = null;
     }
+}
 
+class FilaPixel implements EstruturaPixel {
     private No inicio;
     private No fim;
 
