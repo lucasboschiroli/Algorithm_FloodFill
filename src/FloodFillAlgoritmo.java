@@ -116,7 +116,7 @@ class FloodFillAlgoritmo {
             for (int j = 0; j < largura; j++) {
                 if (matriz[i][j] == GerenciarCores.obterCorBranca()) {
                     System.out.print("B ");
-                } else if (matriz[i][j] == 0xFF000000) { // Preto
+                } else if (matriz[i][j] == GerenciarCores.obterCorPreta()) {
                     System.out.print("P ");
                 } else if (matriz[i][j] == GerenciarCores.obterCorVermelha()) {
                     System.out.print("V ");

@@ -18,4 +18,8 @@ class GerenciarCores {
     public static int obterCorVerde() {
         return 0xFF00FF00; // Verde em formato ARGB
     }
+
+    public static int obterCorPreta() {
+        return 0xFF000000; // Preto em formato ARGB
+    }
 }
