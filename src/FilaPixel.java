@@ -1,16 +1,16 @@
-class No {
+class NoFila {
     Pixel pixel;
-    No proximo;
+    NoFila proximo;
 
-    No(Pixel pixel) {
+    NoFila(Pixel pixel) {
         this.pixel = pixel;
         this.proximo = null;
     }
 }
 
 class FilaPixel implements EstruturaPixel {
-    private No inicio;
-    private No fim;
+    private NoFila inicio;
+    private NoFila fim;
 
     public FilaPixel() {
         this.inicio = null;
@@ -19,7 +19,7 @@ class FilaPixel implements EstruturaPixel {
 
     @Override
     public void adicionar(Pixel pixel) {
-        No novoNo = new No(pixel);
+        NoFila novoNo = new NoFila(pixel);
 
         if (estaVazia()) {
             inicio = novoNo;

@@ -1,15 +1,15 @@
-class No {
+class NoPilha {
     Pixel pixel;
-    No proximo;
+    NoPilha proximo;
 
-    No(Pixel pixel) {
+    NoPilha(Pixel pixel) {
         this.pixel = pixel;
         this.proximo = null;
     }
 }
 
 class PilhaPixel implements EstruturaPixel {
-    private No topo;
+    private NoPilha topo;
 
     public PilhaPixel() {
         this.topo = null;
@@ -17,7 +17,7 @@ class PilhaPixel implements EstruturaPixel {
 
     @Override
     public void adicionar(Pixel pixel) {
-        No novoNo = new No(pixel);
+        NoPilha novoNo = new NoPilha(pixel);
         novoNo.proximo = topo;
         topo = novoNo;
     }
