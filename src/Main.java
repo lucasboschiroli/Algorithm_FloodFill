@@ -20,7 +20,7 @@ public class Main {
         algoritmo.imprimirMatriz();
 
         // Opção 1: Preenchendo a partir do centro
-        int[] coordenadaInicial = processador.encontrarPixelBrancoNoCentro(matriz);
+        //int[] coordenadaInicial = processador.encontrarPixelBrancoNoCentro(matriz);
 
         // Opção 2: Preenchendo áreas fechadas específicas:
         int[] coordenadaInicial = processador.encontrarPixelBrancoEmAreaFechada(matriz);
