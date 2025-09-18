@@ -18,9 +18,9 @@ class ProcessadorImagem {
         }
     }
 
-    // Novo método para carregar imagem de uma pasta específica
+    // Método para carregar imagem de uma pasta específica
     public int[][] carregarImagemDaPasta(String pasta, String nomeArquivo) {
-        // Extensões comuns para imagens em preto e branco
+
         String[] extensoes = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tiff"};
 
         for (String extensao : extensoes) {
@@ -49,7 +49,7 @@ class ProcessadorImagem {
             for (int y = 0; y < altura; y++) {
                 for (int x = 0; x < largura; x++) {
                     int rgb = imagem.getRGB(x, y);
-                    // Para imagens P&B, converte para escala de cinza se necessário
+                    // Converte para escala de cinza se necessário (imagens P&B)
                     matriz[y][x] = converterParaPretoBranco(rgb);
                 }
             }
@@ -65,12 +65,12 @@ class ProcessadorImagem {
 
     // Método para garantir que a imagem seja tratada como P&B
     private int converterParaPretoBranco(int rgb) {
-        // Extrai os componentes RGB
+        // Extrai os componentes RGB (cores)
         int r = (rgb >> 16) & 0xFF;
         int g = (rgb >> 8) & 0xFF;
         int b = rgb & 0xFF;
 
-        // Calcula a luminância (escala de cinza)
+        // Calcula a escala de cinza
         int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
 
         // Converte para preto ou branco baseado em um threshold
@@ -81,7 +81,7 @@ class ProcessadorImagem {
         }
     }
 
-    // Método para encontrar um pixel branco em uma área específica (centro da imagem)
+    // Método para encontrar um pixel branco no centro da imagem
     public int[] encontrarPixelBrancoNoCentro(int[][] matriz) {
         int altura = matriz.length;
         int largura = matriz[0].length;
@@ -131,12 +131,11 @@ class ProcessadorImagem {
 
         System.out.println("Procurando pixel branco em área fechada...");
 
-        // Procura por pixels brancos que estão cercados por pixels pretos
+        // Procura por pixels brancos cercados por pixels pretos
         for (int y = 1; y < altura - 1; y++) {
             for (int x = 1; x < largura - 1; x++) {
                 if (matriz[y][x] == 0xFFFFFFFF) {
-                    // Verifica se está em uma área relativamente fechada
-                    // (tem pixels pretos nas proximidades)
+                    // Verifica se está em uma área relativamente fechada (tem pixels pretos nas proximidades)
                     boolean temPretoProximo = false;
                     for (int dy = -5; dy <= 5 && !temPretoProximo; dy++) {
                         for (int dx = -5; dx <= 5 && !temPretoProximo; dx++) {
@@ -159,7 +158,7 @@ class ProcessadorImagem {
             }
         }
 
-        // Se não encontrar, usa o método do centro
+        // Se não encontrar, utiliza o método do centro
         return encontrarPixelBrancoNoCentro(matriz);
     }
 
@@ -167,26 +166,26 @@ class ProcessadorImagem {
         System.out.println("Criando matriz de exemplo 10x10 em preto e branco...");
         int[][] matriz = new int[10][10];
 
-        // Preenche com branco
+        // Preenche com a cor branca
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                matriz[i][j] = 0xFFFFFFFF; // Branco
+                matriz[i][j] = 0xFFFFFFFF; // Código - Branco
             }
         }
 
-        // Adiciona uma linha diagonal preta
+        // Adiciona uma linha diagonal de cor preta
         for (int i = 0; i < 10; i++) {
             if (i < 10) {
-                matriz[i][i] = 0xFF000000; // Preto
+                matriz[i][i] = 0xFF000000; // Código - Preto
             }
         }
 
-        // Adiciona algumas bordas pretas
+        // Adiciona bordas pretas
         for (int i = 0; i < 10; i++) {
             matriz[0][i] = 0xFF000000; // Borda superior
             matriz[9][i] = 0xFF000000; // Borda inferior
-            matriz[i][0] = 0xFF000000; // Borda esquerda
-            matriz[i][9] = 0xFF000000; // Borda direita
+            matriz[i][0] = 0xFF000000; // Borda da esquerda
+            matriz[i][9] = 0xFF000000; // Borda da direita
         }
 
         return matriz;
@@ -228,4 +227,5 @@ class ProcessadorImagem {
 
         return imagem;
     }
+
 }
