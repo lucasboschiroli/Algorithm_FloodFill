@@ -8,7 +8,6 @@ public class Main {
         ProcessadorImagem processador = new ProcessadorImagem("output");
 
         // Carrega a imagem da pasta input com nome input
-        // Tenta diferentes extensões de arquivo comuns para imagens P&B
         int[][] matriz = processador.carregarImagemDaPasta("input", "input");
 
         // Cria uma cópia da matriz para testar com fila
@@ -20,13 +19,13 @@ public class Main {
         System.out.println("Matriz inicial:");
         algoritmo.imprimirMatriz();
 
-        // Opção 1: Preencher a partir do centro (mais provável de pegar áreas internas)
+        // Opção 1: Preenchendo a partir do centro
         int[] coordenadaInicial = processador.encontrarPixelBrancoNoCentro(matriz);
 
-        // Opção 2: Se você quiser preencher áreas fechadas específicas, descomente a linha abaixo:
-        // int[] coordenadaInicial = processador.encontrarPixelBrancoEmAreaFechada(matriz);
+        // Opção 2: Preenchendo áreas fechadas específicas:
+        int[] coordenadaInicial = processador.encontrarPixelBrancoEmAreaFechada(matriz);
 
-        // Opção 3: Se você souber as coordenadas exatas, pode definir manualmente:
+        // Opção 3: Preenchendo coordenadas exatas:
         // int[] coordenadaInicial = {100, 200}; // x, y específicos
 
         int x = coordenadaInicial[0];
