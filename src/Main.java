@@ -35,13 +35,13 @@ public class Main {
 
         // Testa com Pilha
         System.out.println("=== TESTANDO COM PILHA ===");
-        algoritmo.preencherComPilha(y, x, GerenciarCores.obterCorVermelha());
+        algoritmo.preencherComPilha(x, y, GerenciarCores.obterCorVermelha());
         algoritmo.imprimirMatriz();
 
         // Testa com Fila (usando a cópia da matriz original)
         System.out.println("=== TESTANDO COM FILA ===");
         FloodFillAlgoritmo algoritmoFila = new FloodFillAlgoritmo(matrizFila, processador);
-        algoritmoFila.preencherComFila(y, x, GerenciarCores.obterCorAzul());
+        algoritmoFila.preencherComFila(x, y, GerenciarCores.obterCorVerde());
         algoritmoFila.imprimirMatriz();
 
         System.out.println("Execução concluída! Verifique as imagens na pasta 'output'.");
