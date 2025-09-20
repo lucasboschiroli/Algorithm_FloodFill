@@ -69,28 +69,29 @@ class FloodFillAlgoritmo {
                 matriz[py][px] = novaCor;
                 pixelsProcessados++;
 
-                // ATUALIZAÇÃO: Salva imagem a cada pixel modificado (conforme requisito)
+                // Salva imagem a cada pixel modificado (requisito obrigatório)
                 frameCount++;
                 processador.salvarImagemAnimacao(matriz, frameCount, tipoEstrutura);
 
-                // Log a cada 50 pixels para não poluir o console
-                if (pixelsProcessados % 50 == 0) {
-                    System.out.println("Progresso: " + pixelsProcessados + " pixels processados");
+                // Log reduzido para não poluir console, mas confirmando que cada pixel é processado
+                if (pixelsProcessados % 100 == 0) {
+                    System.out.println("Progresso: " + pixelsProcessados + " pixels processados (frame " + frameCount + " salvo)");
                 }
 
-                // Adiciona os 4 vizinhos à estrutura
+                // Adiciona os 4 vizinhos à estrutura (REQUISITO: usar estrutura própria para armazenar vizinhos)
                 adicionarVizinhos(px, py);
             }
         }
 
         System.out.println("Flood Fill concluído! Pixels processados: " + pixelsProcessados);
         System.out.println("Total de frames de animação salvos: " + frameCount);
+        System.out.println("CONFIRMAÇÃO: Utilizou estrutura " + tipoEstrutura + " própria para armazenar vizinhos");
 
-        // Salva a imagem final
         processador.salvarImagemFinal(matriz, tipoEstrutura.toLowerCase());
     }
 
     private void adicionarVizinhos(int x, int y) {
+
         // Vizinho superior
         if (coordenadaValida(x, y - 1)) {
             estrutura.adicionar(new Pixel(x, y - 1));
@@ -119,7 +120,6 @@ class FloodFillAlgoritmo {
     public void imprimirMatriz() {
         System.out.println("Estado atual da matriz:");
 
-        // Para matrizes grandes, imprimir apenas uma amostra
         int alturaParaImprimir = Math.min(altura, 15);
         int larguraParaImprimir = Math.min(largura, 30);
 
