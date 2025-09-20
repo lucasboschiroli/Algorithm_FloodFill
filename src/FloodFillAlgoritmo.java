@@ -48,6 +48,7 @@ class FloodFillAlgoritmo {
         estrutura.adicionar(new Pixel(x, y));
 
         int pixelsProcessados = 0;
+        int frameCount = 0;
 
         // Loop principal do algoritmo
         while (!estrutura.estaVazia()) {
@@ -68,9 +69,13 @@ class FloodFillAlgoritmo {
                 matriz[py][px] = novaCor;
                 pixelsProcessados++;
 
-                // Salva imagem a cada 50 pixels processados (para animação)
+                // ATUALIZAÇÃO: Salva imagem a cada pixel modificado (conforme requisito)
+                frameCount++;
+                processador.salvarImagemAnimacao(matriz, frameCount, tipoEstrutura);
+
+                // Log a cada 50 pixels para não poluir o console
                 if (pixelsProcessados % 50 == 0) {
-                    processador.salvarImagemAnimacao(matriz, pixelsProcessados, tipoEstrutura);
+                    System.out.println("Progresso: " + pixelsProcessados + " pixels processados");
                 }
 
                 // Adiciona os 4 vizinhos à estrutura
@@ -79,9 +84,10 @@ class FloodFillAlgoritmo {
         }
 
         System.out.println("Flood Fill concluído! Pixels processados: " + pixelsProcessados);
+        System.out.println("Total de frames de animação salvos: " + frameCount);
 
         // Salva a imagem final
-        processador.salvarImagemFinal(matriz, tipoEstrutura);
+        processador.salvarImagemFinal(matriz, tipoEstrutura.toLowerCase());
     }
 
     private void adicionarVizinhos(int x, int y) {
@@ -112,8 +118,17 @@ class FloodFillAlgoritmo {
 
     public void imprimirMatriz() {
         System.out.println("Estado atual da matriz:");
-        for (int i = 0; i < altura; i++) {
-            for (int j = 0; j < largura; j++) {
+
+        // Para matrizes grandes, imprimir apenas uma amostra
+        int alturaParaImprimir = Math.min(altura, 15);
+        int larguraParaImprimir = Math.min(largura, 30);
+
+        if (altura > 15 || largura > 30) {
+            System.out.println("(Mostrando amostra " + alturaParaImprimir + "x" + larguraParaImprimir + " de " + altura + "x" + largura + ")");
+        }
+
+        for (int i = 0; i < alturaParaImprimir; i++) {
+            for (int j = 0; j < larguraParaImprimir; j++) {
                 if (matriz[i][j] == GerenciarCores.obterCorBranca()) {
                     System.out.print("B ");
                 } else if (matriz[i][j] == GerenciarCores.obterCorPreta()) {
@@ -130,6 +145,43 @@ class FloodFillAlgoritmo {
             }
             System.out.println();
         }
+
+        if (altura > 15 || largura > 30) {
+            System.out.println("... (matriz completa salva nas imagens)");
+        }
+
         System.out.println();
+    }
+
+    // Método adicional para verificar se o preenchimento é possível
+    public boolean podePreencherPonto(int x, int y, int novaCor) {
+        if (!coordenadaValida(x, y)) {
+            return false;
+        }
+
+        int corAtual = matriz[y][x];
+        return !GerenciarCores.coresSaoIguais(corAtual, novaCor);
+    }
+
+    // Método para obter informações sobre a matriz
+    public String obterInformacoesMatriz() {
+        int pixelsBrancos = 0;
+        int pixelsPretos = 0;
+        int pixelsColoridos = 0;
+
+        for (int i = 0; i < altura; i++) {
+            for (int j = 0; j < largura; j++) {
+                if (matriz[i][j] == GerenciarCores.obterCorBranca()) {
+                    pixelsBrancos++;
+                } else if (matriz[i][j] == GerenciarCores.obterCorPreta()) {
+                    pixelsPretos++;
+                } else {
+                    pixelsColoridos++;
+                }
+            }
+        }
+
+        return String.format("Matriz %dx%d - Brancos: %d, Pretos: %d, Coloridos: %d",
+                largura, altura, pixelsBrancos, pixelsPretos, pixelsColoridos);
     }
 }
