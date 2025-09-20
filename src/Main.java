@@ -2,16 +2,15 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("=== FLOOD FILL - IMPLEMENTAÇÃO ===");
-        System.out.println("Trabalho de Estruturas de Dados - Pilha vs Fila");
+        System.out.println("TDE01 - FLOOD FILL");
+        System.out.println("==========================================");
         System.out.println();
 
-        // Opção de execução
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Escolha o modo de execução:");
-        System.out.println("1 - Interface gráfica interativa");
-        System.out.println("2 - Exemplo automático com matriz padrão");
+        System.out.println("1 - Interface gráfica interativa (comparação visual Pilha vs Fila)");
+        System.out.println("2 - Exemplo automático com matriz padrão (demonstração completa)");
         System.out.print("Opção: ");
 
         int opcao = scanner.nextInt();
@@ -32,42 +31,39 @@ public class Main {
         scanner.close();
     }
 
-
     /* MODO 1: Interface gráfica (mantém funcionalidade existente) */
     private static void executarInterfaceGrafica() {
         System.out.println("\n=== MODO 1: INTERFACE GRÁFICA ===");
-        System.out.println("Iniciando interface gráfica interativa...");
+        System.out.println(" Iniciando interface gráfica interativa...");
+        System.out.println(" Comparação visual: Pilha (Vermelho) vs Fila (Verde)");
 
         javax.swing.SwingUtilities.invokeLater(() -> {
-            new FloodFillApp().setVisible(true);
+            FloodFillApp app = new FloodFillApp();
+            app.setVisible(true);
+            System.out.println(" Interface gráfica iniciada com sucesso!");
         });
     }
 
-    /* MODO 3: Exemplo automático com matriz padrão */
+    /* MODO 2: Exemplo automático com matriz padrão */
     private static void executarExemploAutomatico() {
         System.out.println("\n=== MODO 2: EXEMPLO AUTOMÁTICO ===");
-        System.out.println("Executando demonstração com matriz exemplo...");
+        System.out.println(" Executando demonstração completa...");
 
-        // Cria processador
         ProcessadorImagem processador = new ProcessadorImagem("flood_fill_example_output");
 
-        // Cria matriz exemplo conforme especificações
         int[][] matriz = criarMatrizExemploCompleta();
 
-        // Encontra ponto ideal
         int[] ponto = processador.encontrarPixelBrancoEmAreaFechada(matriz);
 
-        System.out.println("Usando ponto: (" + ponto[0] + ", " + ponto[1] + ")");
+        System.out.println(" Ponto escolhido para demonstração: (" + ponto[0] + ", " + ponto[1] + ")");
 
-        // Executa flood fill
         executarFloodFillCompleto(matriz, ponto[0], ponto[1], processador);
     }
 
     private static void executarFloodFillCompleto(int[][] matrizOriginal, int x, int y, ProcessadorImagem processador) {
-        System.out.println("\n=== EXECUTANDO FLOOD FILL ===");
+        System.out.println("\n=== EXECUTANDO FLOOD FILL COM ESTRUTURAS PRÓPRIAS ===");
         System.out.println("Ponto inicial: (" + x + ", " + y + ")");
 
-        // Cria duas cópias da matriz original
         int[][] matrizPilha = copiarMatriz(matrizOriginal);
         int[][] matrizFila = copiarMatriz(matrizOriginal);
 
@@ -77,51 +73,57 @@ public class Main {
 
         processador.salvarImagemFinal(matrizOriginal, "original");
 
-        System.out.println("\n--- EXECUTANDO COM PILHA (DFS) ---");
+        System.out.println("\n--- EXECUTANDO COM PILHAPIXEL (DFS) ---");
         FloodFillAlgoritmo algoritmoPilha = new FloodFillAlgoritmo(matrizPilha, processadorPilha);
+
         long inicioPilha = System.currentTimeMillis();
         algoritmoPilha.preencherComPilha(x, y, GerenciarCores.obterCorVermelha());
         long fimPilha = System.currentTimeMillis();
 
-        System.out.println("\n--- EXECUTANDO COM FILA (BFS) ---");
+        System.out.println("\n--- EXECUTANDO COM FILAPIXEL (BFS) ---");
         FloodFillAlgoritmo algoritmoFila = new FloodFillAlgoritmo(matrizFila, processadorFila);
+
         long inicioFila = System.currentTimeMillis();
         algoritmoFila.preencherComFila(x, y, GerenciarCores.obterCorVerde());
         long fimFila = System.currentTimeMillis();
 
-        // Relatório final
-        gerarRelatorioFinal(algoritmoPilha, algoritmoFila, fimPilha - inicioPilha, fimFila - inicioFila);
+        // Relatório final comparativo
+        gerarRelatorioFinalCompleto(algoritmoPilha, algoritmoFila, fimPilha - inicioPilha, fimFila - inicioFila);
     }
 
-    /* Gera relatório comparativo final*/
+    private static void gerarRelatorioFinalCompleto(FloodFillAlgoritmo pilha, FloodFillAlgoritmo fila, long tempoPilha, long tempoFila) {
+        System.out.println("\n=== RELATÓRIO FINAL COMPLETO ===");
+        System.out.println("PERFORMANCE:");
+        System.out.println("- Tempo Pilha (DFS): " + tempoPilha + "ms");
+        System.out.println("- Tempo Fila (BFS): " + tempoFila + "ms");
+        System.out.println("- Diferença: " + Math.abs(tempoPilha - tempoFila) + "ms");
 
-    private static void gerarRelatorioFinal(FloodFillAlgoritmo pilha, FloodFillAlgoritmo fila, long tempoPilha, long tempoFila) {
-        System.out.println("\n=== RELATÓRIO FINAL ===");
-        System.out.println("Tempo Pilha (DFS): " + tempoPilha + "ms");
-        System.out.println("Tempo Fila (BFS): " + tempoFila + "ms");
-        System.out.println();
-        System.out.println("Informações Pilha: " + pilha.obterInformacoesMatriz());
-        System.out.println("Informações Fila: " + fila.obterInformacoesMatriz());
-        System.out.println();
-        System.out.println("DIFERENÇAS ESTRUTURAIS:");
-        System.out.println("- PILHA (DFS): Explora em profundidade, padrão mais irregular");
-        System.out.println("- FILA (BFS): Explora em largura, padrão mais uniforme/circular");
-        System.out.println();
-        System.out.println("SAÍDAS GERADAS:");
-        System.out.println("- Imagem original salva");
-        System.out.println("- Resultado Pilha (vermelho) com animação");
-        System.out.println("- Resultado Fila (verde) com animação");
-        System.out.println("- Frames de animação para cada estrutura");
-        System.out.println("\nProcessamento concluído com sucesso!");
-        System.out.println("==========================================");
+        System.out.println("\nESTATÍSTICAS:");
+        System.out.println("- Resultado Pilha: " + pilha.obterInformacoesMatriz());
+        System.out.println("- Resultado Fila: " + fila.obterInformacoesMatriz());
+
+        System.out.println("\nDIFERENÇAS ESTRUTURAIS DEMONSTRADAS:");
+        System.out.println("✓ PILHA (DFS): Explora em profundidade, padrão mais irregular");
+        System.out.println("  - Últimos vizinhos adicionados são processados primeiro");
+        System.out.println("  - Cria padrões de preenchimento mais 'serpenteantes'");
+        System.out.println(" FILA (BFS): Explora em largura, padrão mais uniforme/circular");
+        System.out.println(" - Primeiros vizinhos adicionados são processados primeiro");
+        System.out.println(" - Cria padrões de preenchimento mais 'concêntricos'");
+
+        System.out.println("\nARQUIVOS GERADOS (FORMATO PNG OBRIGATÓRIO):");
+        System.out.println(" Imagem original salva");
+        System.out.println(" Resultado Pilha (vermelho) com animação completa");
+        System.out.println(" Resultado Fila (verde) com animação completa");
+        System.out.println(" Frames de animação PNG para cada pixel modificado");
+
     }
 
-    /* Cria matriz exemplo otimizada para demonstração */
+    /* Cria matriz exemplo otimizada conforme requisitos */
     private static int[][] criarMatrizExemploCompleta() {
         int tamanho = 30;
         int[][] matriz = new int[tamanho][tamanho];
 
-        // Preenche com branco
+        // Fundo branco
         for (int i = 0; i < tamanho; i++) {
             for (int j = 0; j < tamanho; j++) {
                 matriz[i][j] = GerenciarCores.obterCorBranca();
@@ -136,25 +138,27 @@ public class Main {
             matriz[i][tamanho-1] = GerenciarCores.obterCorPreta();
         }
 
-        // Formas internas para demonstrar diferenças entre estruturas
-
-        // Retângulo
-        for (int i = 10; i <= 20; i++) {
-            for (int j = 10; j <= 20; j++) {
-                if (i == 10 || i == 20 || j == 10 || j == 20) {
+        // Formas internas para demonstrar diferenças entre Pilha e Fila
+        // Retângulo central
+        for (int i = 12; i <= 18; i++) {
+            for (int j = 12; j <= 18; j++) {
+                if (i == 12 || i == 18 || j == 12 || j == 18) {
                     matriz[i][j] = GerenciarCores.obterCorPreta();
                 }
             }
         }
 
+        // Formas adicionais para demonstrar padrões diferentes
         for (int i = 5; i < 10; i++) {
             matriz[5][i] = GerenciarCores.obterCorPreta();
             matriz[i][5] = GerenciarCores.obterCorPreta();
         }
 
-        // Diagonal parcial
+        // Linha diagonal parcial
         for (int i = 22; i < 28; i++) {
-            matriz[i][i] = GerenciarCores.obterCorPreta();
+            if (i < tamanho && i < tamanho) {
+                matriz[i][i] = GerenciarCores.obterCorPreta();
+            }
         }
 
         System.out.println("Matriz exemplo criada: " + tamanho + "x" + tamanho);
@@ -167,12 +171,9 @@ public class Main {
         int[][] copia = new int[altura][largura];
 
         for (int i = 0; i < altura; i++) {
-            for (int j = 0; j < largura; j++) {
-                copia[i][j] = original[i][j];
-            }
+            System.arraycopy(original[i], 0, copia[i], 0, largura);
         }
 
         return copia;
     }
-
 }
