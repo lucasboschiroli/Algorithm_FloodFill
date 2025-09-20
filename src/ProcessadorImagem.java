@@ -4,7 +4,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 class ProcessadorImagem {
-
     private String diretorioSaida;
 
     public ProcessadorImagem(String diretorioSaida) {
@@ -228,5 +227,4 @@ class ProcessadorImagem {
 
         return imagem;
     }
-    
 }

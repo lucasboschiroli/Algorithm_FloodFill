@@ -1,5 +1,4 @@
 class Pixel {
-
     private int x;
     private int y;
 
@@ -15,7 +14,6 @@ class Pixel {
     public int getY() {
         return y;
     }
-
 }
 
 // Interface para estruturas de dados

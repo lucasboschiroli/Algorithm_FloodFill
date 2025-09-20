@@ -1,5 +1,4 @@
 class FloodFillAlgoritmo {
-
     private int[][] matriz;
     private int largura;
     private int altura;
@@ -123,6 +122,8 @@ class FloodFillAlgoritmo {
                     System.out.print("V ");
                 } else if (matriz[i][j] == GerenciarCores.obterCorAzul()) {
                     System.out.print("A ");
+                } else if (matriz[i][j] == GerenciarCores.obterCorVerde()) {
+                    System.out.print("G ");
                 } else {
                     System.out.print("? ");
                 }
@@ -131,5 +132,4 @@ class FloodFillAlgoritmo {
         }
         System.out.println();
     }
-    
 }
