@@ -9,6 +9,7 @@ class NoPilha {
 }
 
 class PilhaPixel implements EstruturaPixel {
+    
     private NoPilha topo;
 
     public PilhaPixel() {
@@ -37,4 +38,5 @@ class PilhaPixel implements EstruturaPixel {
     public boolean estaVazia() {
         return topo == null;
     }
+
 }

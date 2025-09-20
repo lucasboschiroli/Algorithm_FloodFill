@@ -1,4 +1,5 @@
 class GerenciarCores {
+
     public static boolean coresSaoIguais(int cor1, int cor2) {
         return cor1 == cor2;
     }
@@ -22,4 +23,5 @@ class GerenciarCores {
     public static int obterCorPreta() {
         return 0xFF000000; // Preto em formato ARGB
     }
+    
 }

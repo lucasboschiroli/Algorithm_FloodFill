@@ -9,6 +9,7 @@ class NoFila {
 }
 
 class FilaPixel implements EstruturaPixel {
+
     private NoFila inicio;
     private NoFila fim;
 
@@ -50,4 +51,5 @@ class FilaPixel implements EstruturaPixel {
     public boolean estaVazia() {
         return inicio == null;
     }
+    
 }
