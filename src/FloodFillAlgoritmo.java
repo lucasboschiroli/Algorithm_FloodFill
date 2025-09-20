@@ -69,7 +69,7 @@ class FloodFillAlgoritmo {
                 matriz[py][px] = novaCor;
                 pixelsProcessados++;
 
-                // Salva imagem a cada pixel modificado (requisito obrigatório)
+                // Salva imagem a cada pixel modificado 
                 frameCount++;
                 processador.salvarImagemAnimacao(matriz, frameCount, tipoEstrutura);
 
@@ -78,7 +78,7 @@ class FloodFillAlgoritmo {
                     System.out.println("Progresso: " + pixelsProcessados + " pixels processados (frame " + frameCount + " salvo)");
                 }
 
-                // Adiciona os 4 vizinhos à estrutura (REQUISITO: usar estrutura própria para armazenar vizinhos)
+                // Adiciona os 4 vizinhos à estrutura
                 adicionarVizinhos(px, py);
             }
         }
@@ -184,4 +184,5 @@ class FloodFillAlgoritmo {
         return String.format("Matriz %dx%d - Brancos: %d, Pretos: %d, Coloridos: %d",
                 largura, altura, pixelsBrancos, pixelsPretos, pixelsColoridos);
     }
+
 }
