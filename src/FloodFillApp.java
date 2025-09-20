@@ -25,21 +25,22 @@ public class FloodFillApp extends JFrame {
     private JButton btnResetar;
     private JButton btnSalvarResultado;
     private JButton btnGerarNovaImagem;
-    private JButton btnEscolherCor;
     private JCheckBox chkAnimacao;
     private JSlider sliderVelocidade;
-    private JComboBox<String> comboCores;
-    private Color corPersonalizada = Color.RED;
 
     private int clickX = -1, clickY = -1;
     private boolean floodFillEmAndamento = false;
+    private ProcessadorImagem processador;
 
     public FloodFillApp() {
+        // Inicializa o processador para salvar animações
+        this.processador = new ProcessadorImagem("flood_fill_gui_output");
+
         initializeComponents();
         setupLayout();
         setupEventHandlers();
 
-        setTitle("Flood Fill Visualizer - Pilha vs Fila (Swing)");
+        setTitle("Flood Fill Visualizer - Pilha (Vermelho) vs Fila (Verde)");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
 
@@ -54,8 +55,8 @@ public class FloodFillApp extends JFrame {
     private void initializeComponents() {
         // Canvas panels
         canvasOriginal = new CanvasPanel("Original - Clique para escolher ponto");
-        canvasPilha = new CanvasPanel("Pilha (DFS) - Profundidade Primeiro");
-        canvasFila = new CanvasPanel("Fila (BFS) - Largura Primeiro");
+        canvasPilha = new CanvasPanel("Pilha (DFS) - Vermelho");
+        canvasFila = new CanvasPanel("Fila (BFS) - Verde");
 
         // Botões
         btnCarregarImagem = new JButton("Carregar Imagem");
@@ -63,16 +64,13 @@ public class FloodFillApp extends JFrame {
         btnResetar = new JButton("Resetar");
         btnSalvarResultado = new JButton("Salvar Resultado");
         btnGerarNovaImagem = new JButton("Nova Imagem Aleatória");
-        btnEscolherCor = new JButton("Escolher Cor");
 
         // Controles
         chkAnimacao = new JCheckBox("Animação", true);
-        sliderVelocidade = new JSlider(1, 100, 50);
+        sliderVelocidade = new JSlider(1, 100, 30);
         sliderVelocidade.setPaintTicks(true);
         sliderVelocidade.setPaintLabels(true);
         sliderVelocidade.setMajorTickSpacing(25);
-
-        comboCores = new JComboBox<>(new String[]{"Vermelho", "Verde", "Azul", "Amarelo", "Rosa", "Cor Personalizada"});
 
         // Labels
         statusLabel = new JLabel("Clique no canvas original para escolher o ponto inicial");
@@ -83,7 +81,6 @@ public class FloodFillApp extends JFrame {
     }
 
     private void estilizarComponentes() {
-        // Botões
         btnCarregarImagem.setBackground(new Color(76, 175, 80));
         btnCarregarImagem.setForeground(Color.WHITE);
         btnCarregarImagem.setFocusPainted(false);
@@ -105,11 +102,6 @@ public class FloodFillApp extends JFrame {
         btnSalvarResultado.setForeground(Color.WHITE);
         btnSalvarResultado.setFocusPainted(false);
 
-        btnEscolherCor.setBackground(new Color(103, 58, 183));
-        btnEscolherCor.setForeground(Color.WHITE);
-        btnEscolherCor.setFocusPainted(false);
-
-        // Labels
         statusLabel.setFont(statusLabel.getFont().deriveFont(14f));
         coordenadasLabel.setFont(coordenadasLabel.getFont().deriveFont(12f));
         coordenadasLabel.setForeground(new Color(25, 118, 210));
@@ -119,10 +111,10 @@ public class FloodFillApp extends JFrame {
         setLayout(new BorderLayout());
 
         // Título
-        JLabel titulo = new JLabel("Flood Fill: Comparação Pilha (DFS) vs Fila (BFS)", SwingConstants.CENTER);
-        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 24f));
+        JLabel titulo = new JLabel("Flood Fill: Pilha (DFS-Vermelho) vs Fila (BFS-Verde)", SwingConstants.CENTER);
+        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 20f));
         titulo.setForeground(new Color(25, 118, 210));
-        titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
 
         // Canvas container
         JPanel canvasContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
@@ -142,9 +134,6 @@ public class FloodFillApp extends JFrame {
         controles2.add(chkAnimacao);
         controles2.add(new JLabel("Velocidade:"));
         controles2.add(sliderVelocidade);
-        controles2.add(new JLabel("Cor:"));
-        controles2.add(comboCores);
-        controles2.add(btnEscolherCor);
 
         JPanel controlesContainer = new JPanel(new GridLayout(2, 1, 0, 10));
         controlesContainer.add(controles1);
@@ -165,13 +154,14 @@ public class FloodFillApp extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
 
         // Cor de fundo
-        getContentPane().setBackground(new Color(240, 248, 255));
-        canvasContainer.setBackground(new Color(240, 248, 255));
-        bottomPanel.setBackground(new Color(240, 248, 255));
-        controlesContainer.setBackground(new Color(240, 248, 255));
-        statusContainer.setBackground(new Color(240, 248, 255));
-        controles1.setBackground(new Color(240, 248, 255));
-        controles2.setBackground(new Color(240, 248, 255));
+        Color bgColor = new Color(240, 248, 255);
+        getContentPane().setBackground(bgColor);
+        canvasContainer.setBackground(bgColor);
+        bottomPanel.setBackground(bgColor);
+        controlesContainer.setBackground(bgColor);
+        statusContainer.setBackground(bgColor);
+        controles1.setBackground(bgColor);
+        controles2.setBackground(bgColor);
     }
 
     private void setupEventHandlers() {
@@ -180,7 +170,6 @@ public class FloodFillApp extends JFrame {
         btnResetar.addActionListener(e -> resetarVisualizacao());
         btnSalvarResultado.addActionListener(e -> salvarResultado());
         btnGerarNovaImagem.addActionListener(e -> gerarNovaImagemAleatoria());
-        btnEscolherCor.addActionListener(e -> escolherCorPersonalizada());
 
         canvasOriginal.addMouseListener(new MouseAdapter() {
             @Override
@@ -205,7 +194,6 @@ public class FloodFillApp extends JFrame {
 
         if (clickX >= 0 && clickX < GRID_SIZE && clickY >= 0 && clickY < GRID_SIZE) {
             atualizarCanvas();
-
             statusLabel.setText(String.format("Ponto selecionado: (%d, %d) - Pronto para Flood Fill!", clickX, clickY));
             coordenadasLabel.setText(String.format("Coordenadas: (%d, %d)", clickX, clickY));
         }
@@ -249,11 +237,9 @@ public class FloodFillApp extends JFrame {
             int titleX = (getWidth() - fm.stringWidth(titulo)) / 2;
             g2d.drawString(titulo, titleX, 20);
 
-            // Desenhar grid se matriz existir
+            // Desenhar grid
             if (this == canvasOriginal && matrizOriginal != null) {
                 desenharMatriz(g2d, matrizOriginal, 15, 30);
-
-                // Desenhar indicador de ponto selecionado
                 if (clickX != -1 && clickY != -1) {
                     g2d.setColor(Color.RED);
                     g2d.fillOval(15 + clickX * PIXEL_SIZE + PIXEL_SIZE/4,
@@ -286,52 +272,7 @@ public class FloodFillApp extends JFrame {
         if (colorInt == GerenciarCores.obterCorVermelha()) return Color.RED;
         if (colorInt == GerenciarCores.obterCorVerde()) return Color.GREEN;
         if (colorInt == GerenciarCores.obterCorAzul()) return Color.BLUE;
-        if (colorInt == 0xFFFFFF00) return Color.YELLOW;
-        if (colorInt == 0xFFFF69B4) return Color.PINK;
-
-        // Para cores personalizadas - extrair RGB do int
-        if ((colorInt & 0xFF000000) == 0xFF000000) { // Verificar se tem alpha
-            int r = (colorInt >> 16) & 0xFF;
-            int g = (colorInt >> 8) & 0xFF;
-            int b = colorInt & 0xFF;
-            return new Color(r, g, b);
-        }
-
         return Color.GRAY;
-    }
-
-    private int obterCorSelecionada() {
-        switch ((String) comboCores.getSelectedItem()) {
-            case "Verde": return GerenciarCores.obterCorVerde();
-            case "Azul": return GerenciarCores.obterCorAzul();
-            case "Amarelo": return 0xFFFFFF00;
-            case "Rosa": return 0xFFFF69B4;
-            case "Cor Personalizada": return corPersonalizadaParaInt(corPersonalizada);
-            default: return GerenciarCores.obterCorVermelha();
-        }
-    }
-
-    private int corPersonalizadaParaInt(Color cor) {
-        return (255 << 24) | (cor.getRed() << 16) | (cor.getGreen() << 8) | cor.getBlue();
-    }
-
-    private void escolherCorPersonalizada() {
-        Color novaCor = JColorChooser.showDialog(this, "Escolher Cor Personalizada", corPersonalizada);
-        if (novaCor != null) {
-            corPersonalizada = novaCor;
-            comboCores.setSelectedItem("Cor Personalizada");
-
-            // Atualizar a aparência do botão com a nova cor
-            btnEscolherCor.setBackground(corPersonalizada);
-            // Determinar se o texto deve ser branco ou preto baseado no brilho da cor
-            int brightness = (corPersonalizada.getRed() + corPersonalizada.getGreen() + corPersonalizada.getBlue()) / 3;
-            btnEscolherCor.setForeground(brightness > 128 ? Color.BLACK : Color.WHITE);
-
-            statusLabel.setText("Cor personalizada selecionada: RGB(" +
-                    corPersonalizada.getRed() + ", " +
-                    corPersonalizada.getGreen() + ", " +
-                    corPersonalizada.getBlue() + ")");
-        }
     }
 
     private void criarMatrizExemplo() {
@@ -376,18 +317,11 @@ public class FloodFillApp extends JFrame {
                 }
             }
         }
-
-        // Linha diagonal
-        for (int i = 1; i < 5; i++) {
-            if (i < GRID_SIZE && i < GRID_SIZE) {
-                matrizOriginal[i][i] = GerenciarCores.obterCorPreta();
-            }
-        }
     }
 
     private void gerarNovaImagemAleatoria() {
         if (floodFillEmAndamento) {
-            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual antes de gerar nova imagem.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -422,22 +356,6 @@ public class FloodFillApp extends JFrame {
             }
         }
 
-        // Círculos aleatórios
-        for (int k = 0; k < rand.nextInt(2) + 1; k++) {
-            int centerX = rand.nextInt(GRID_SIZE - 6) + 3;
-            int centerY = rand.nextInt(GRID_SIZE - 6) + 3;
-            int radius = rand.nextInt(3) + 2;
-
-            for (int i = 0; i < GRID_SIZE; i++) {
-                for (int j = 0; j < GRID_SIZE; j++) {
-                    double distance = Math.sqrt((i - centerY) * (i - centerY) + (j - centerX) * (j - centerX));
-                    if (Math.abs(distance - radius) < 0.7) {
-                        matrizOriginal[i][j] = GerenciarCores.obterCorPreta();
-                    }
-                }
-            }
-        }
-
         copiarMatrizes();
         atualizarCanvas();
         clickX = -1;
@@ -468,7 +386,7 @@ public class FloodFillApp extends JFrame {
 
     private void carregarImagem() {
         if (floodFillEmAndamento) {
-            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual antes de carregar nova imagem.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -478,11 +396,8 @@ public class FloodFillApp extends JFrame {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File arquivo = fileChooser.getSelectedFile();
             try {
-                ProcessadorImagem processador = new ProcessadorImagem("temp");
-                matrizOriginal = processador.carregarImagem(arquivo.getAbsolutePath());
-
-                // Redimensionar para o grid
-                matrizOriginal = redimensionarMatriz(matrizOriginal, GRID_SIZE, GRID_SIZE);
+                int[][] novaMatriz = processador.carregarImagem(arquivo.getAbsolutePath());
+                matrizOriginal = redimensionarMatriz(novaMatriz, GRID_SIZE, GRID_SIZE);
                 copiarMatrizes();
                 atualizarCanvas();
 
@@ -491,7 +406,7 @@ public class FloodFillApp extends JFrame {
                 statusLabel.setText("Imagem carregada com sucesso! Clique para escolher ponto inicial.");
                 coordenadasLabel.setText("Coordenadas: -");
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Não foi possível carregar a imagem: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao carregar imagem: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -514,20 +429,19 @@ public class FloodFillApp extends JFrame {
 
     private void iniciarFloodFill() {
         if (clickX == -1 || clickY == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, clique no canvas original para escolher um ponto inicial.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Clique no canvas original para escolher um ponto inicial.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (floodFillEmAndamento) {
-            JOptionPane.showMessageDialog(this, "Flood Fill já está em andamento. Aguarde a conclusão.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Flood Fill já está em andamento.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int novaCor = obterCorSelecionada();
-        executarFloodFillAnimado(novaCor);
+        executarFloodFillComClassesOriginais();
     }
 
-    private void executarFloodFillAnimado(int novaCor) {
+    private void executarFloodFillComClassesOriginais() {
         floodFillEmAndamento = true;
         btnIniciarFloodFill.setEnabled(false);
         statusLabel.setText("Executando Flood Fill... Aguarde!");
@@ -537,20 +451,25 @@ public class FloodFillApp extends JFrame {
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
             @Override
             protected Void doInBackground() throws Exception {
-                // Executar com Pilha
-                SwingFloodFillAnimado floodFillPilha = new SwingFloodFillAnimado(matrizPilha, canvasPilha);
+                // Usar as classes originais FloodFillAlgoritmo
+                ProcessadorImagem processadorPilha = new ProcessadorImagem("flood_fill_gui_output/pilha");
+                ProcessadorImagem processadorFila = new ProcessadorImagem("flood_fill_gui_output/fila");
 
-                // Executar com Fila
-                SwingFloodFillAnimado floodFillFila = new SwingFloodFillAnimado(matrizFila, canvasFila);
-
-                // Executar simultaneamente
+                // Executar Pilha com animação (Vermelho)
                 CompletableFuture<Void> futurePilha = CompletableFuture.runAsync(() -> {
-                    floodFillPilha.preencherComPilhaAnimado(clickX, clickY, novaCor,
+                    SwingFloodFillAnimado floodFillPilha = new SwingFloodFillAnimado(
+                            matrizPilha, canvasPilha, processadorPilha, "pilha");
+                    floodFillPilha.preencherComPilhaAnimado(clickX, clickY,
+                            GerenciarCores.obterCorVermelha(),
                             chkAnimacao.isSelected() ? sliderVelocidade.getValue() : 0);
                 });
 
+                // Executar Fila com animação (Verde)
                 CompletableFuture<Void> futureFila = CompletableFuture.runAsync(() -> {
-                    floodFillFila.preencherComFilaAnimado(clickX, clickY, novaCor,
+                    SwingFloodFillAnimado floodFillFila = new SwingFloodFillAnimado(
+                            matrizFila, canvasFila, processadorFila, "fila");
+                    floodFillFila.preencherComFilaAnimado(clickX, clickY,
+                            GerenciarCores.obterCorVerde(),
                             chkAnimacao.isSelected() ? sliderVelocidade.getValue() : 0);
                 });
 
@@ -562,7 +481,7 @@ public class FloodFillApp extends JFrame {
             protected void done() {
                 floodFillEmAndamento = false;
                 btnIniciarFloodFill.setEnabled(true);
-                statusLabel.setText("Flood Fill concluído! Compare os resultados da Pilha (DFS) vs Fila (BFS).");
+                statusLabel.setText("Flood Fill concluído! Pilha=Vermelho, Fila=Verde. Animações salvas!");
             }
         };
 
@@ -571,7 +490,7 @@ public class FloodFillApp extends JFrame {
 
     private void resetarVisualizacao() {
         if (floodFillEmAndamento) {
-            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual antes de resetar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Aguarde a conclusão do Flood Fill atual.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -590,42 +509,33 @@ public class FloodFillApp extends JFrame {
         }
 
         try {
-            File outputDir = new File("flood_fill_results");
-            if (!outputDir.exists()) {
-                outputDir.mkdirs();
-            }
+            processador.salvarImagemFinal(matrizPilha, "gui_pilha_resultado");
+            processador.salvarImagemFinal(matrizFila, "gui_fila_resultado");
 
-            ProcessadorImagem processador = new ProcessadorImagem("flood_fill_results");
-            processador.salvarImagemFinal(matrizPilha, "pilha_dfs_resultado");
-            processador.salvarImagemFinal(matrizFila, "fila_bfs_resultado");
-
-            statusLabel.setText("Resultados salvos na pasta 'flood_fill_results'!");
-            JOptionPane.showMessageDialog(this, "Resultados salvos com sucesso na pasta 'flood_fill_results'!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            statusLabel.setText("Resultados salvos na pasta 'flood_fill_gui_output'!");
+            JOptionPane.showMessageDialog(this, "Resultados salvos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro ao salvar resultados: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-
-            new FloodFillApp().setVisible(true);
-        });
-    }
-}
-
-// Classe auxiliar para animação do Flood Fill em Swing
+// Classe auxiliar para animação usando as classes originais
 class SwingFloodFillAnimado {
     private int[][] matriz;
     private Component canvas;
     private int largura;
     private int altura;
+    private ProcessadorImagem processador;
+    private String tipo;
+    private int frameCount = 0;
 
-    public SwingFloodFillAnimado(int[][] matriz, Component canvas) {
+    public SwingFloodFillAnimado(int[][] matriz, Component canvas, ProcessadorImagem processador, String tipo) {
         this.matriz = matriz;
         this.canvas = canvas;
         this.altura = matriz.length;
         this.largura = matriz[0].length;
+        this.processador = processador;
+        this.tipo = tipo;
     }
 
     public void preencherComPilhaAnimado(int x, int y, int novaCor, int velocidade) {
@@ -645,6 +555,7 @@ class SwingFloodFillAnimado {
         if (GerenciarCores.coresSaoIguais(corOriginal, novaCor)) return;
 
         estrutura.adicionar(new Pixel(x, y));
+        int pixelsProcessados = 0;
 
         while (!estrutura.estaVazia()) {
             Pixel pixelAtual = estrutura.remover();
@@ -655,6 +566,13 @@ class SwingFloodFillAnimado {
 
             if (coordenadaValida(px, py) && GerenciarCores.coresSaoIguais(matriz[py][px], corOriginal)) {
                 matriz[py][px] = novaCor;
+                pixelsProcessados++;
+
+                // Salvar frame de animação a cada 10 pixels para GUI (mais frequente que os 50 do console)
+                if (pixelsProcessados % 10 == 0) {
+                    frameCount++;
+                    processador.salvarImagemAnimacao(matriz, frameCount, tipo);
+                }
 
                 // Atualizar canvas na thread da UI
                 SwingUtilities.invokeLater(() -> {
@@ -675,6 +593,9 @@ class SwingFloodFillAnimado {
                 adicionarVizinhos(estrutura, px, py);
             }
         }
+
+        // Salvar imagem final
+        processador.salvarImagemFinal(matriz, tipo + "_final");
     }
 
     private void adicionarVizinhos(EstruturaPixel estrutura, int x, int y) {
@@ -687,4 +608,5 @@ class SwingFloodFillAnimado {
     private boolean coordenadaValida(int x, int y) {
         return x >= 0 && x < largura && y >= 0 && y < altura;
     }
+}
 }
