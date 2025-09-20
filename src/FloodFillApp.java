@@ -568,11 +568,8 @@ class SwingFloodFillAnimado {
                 matriz[py][px] = novaCor;
                 pixelsProcessados++;
 
-                // Salvar frame de animação a cada 10 pixels para GUI (mais frequente que os 50 do console)
-                if (pixelsProcessados % 10 == 0) {
-                    frameCount++;
-                    processador.salvarImagemAnimacao(matriz, frameCount, tipo);
-                }
+                frameCount++;
+                processador.salvarImagemAnimacao(matriz, frameCount, tipo);
 
                 // Atualizar canvas na thread da UI
                 SwingUtilities.invokeLater(() -> {
